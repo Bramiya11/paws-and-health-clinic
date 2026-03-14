@@ -37,14 +37,19 @@ db.serialize(() => {
     const stmtO = db.prepare("INSERT INTO owner (owner_name) VALUES (?)");
     stmtO.run("Juan Pérez");
     stmtO.run("Maria García");
+    stmtO.run("Brandon");
     stmtO.finalize();
     const stmtP = db.prepare("INSERT INTO pet (pet_name, id_owner) VALUES (?, ?)");
     stmtP.run("Rex", 1);
     stmtP.run("Luna", 2);
+    stmtP.run("Tato", 3);
+    stmtP.run("Pinky", 3);
     stmtP.finalize();
     const stmtA = db.prepare("INSERT INTO appointments (id_pet, id_owner, service, appointment_date) VALUES (?, ?, ?, ?)");
     stmtA.run(1, 1, "Corte de Pelo", "2026-02-25 10:00");
     stmtA.run(2, 2, "Baño y Limpieza", "2026-02-25 11:30");
+    stmtA.run(3, 3, "Baño y Limpieza", "2026-02-25 11:30");
+    stmtA.run(4, 3, "Baño y Limpieza", "2026-02-25 11:30");
     stmtA.finalize();
 });
 
