@@ -31,6 +31,11 @@
                                 <%= app.appointment_date %>
                             </p>
 
+                            <% if (app.service === 'Consulta Médica') { %>
+                                <p class="card-text mb-1"><strong>Peso:</strong> <%= app.weight %> kg</p>
+                                <p class="card-text mb-3"><strong>Temperatura:</strong> <%= app.temperature %> °C</p>
+                            <% } %>
+
                             <form action="/delete/<%= app.id %>" method="POST"
                                 onsubmit="return confirm('¿Eliminar esta cita?')">
                                 <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>

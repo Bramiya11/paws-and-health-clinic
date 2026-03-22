@@ -23,8 +23,30 @@
                             <option value="Limpieza de Oídos">Limpieza de Oídos</option>
                             <option value="Corte de Uñas">Corte de Uñas</option>
                             <option value="Spa Completo">Spa Completo</option>
+                            <option value="Consulta Médica">Consulta Médica</option>
                         </select>
                     </div>
+
+                    <div id="medicalFields" style="display: none;">
+                        <div class="mb-3">
+                            <label for="weight" class="form-label">Peso</label>
+                            <input type="number" step="0.01" class="form-control" id="weight" name="weight"
+                                placeholder="Ej: 12.5">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="temperature" class="form-label">Temperatura</label>
+                            <input type="number" step="0.1" class="form-control" id="temperature" name="temperature"
+                                placeholder="Ej: 38.5">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="diagnosis" class="form-label">Diagnóstico</label>
+                            <textarea class="form-control" id="diagnosis" name="diagnosis" rows="3"
+                                placeholder="Escriba el diagnóstico..."></textarea>
+                        </div>
+                    </div>
+
                     <div class="mb-4">
                         <label for="appointment_date" class="form-label">Fecha y Hora</label>
                         <input type="datetime-local" class="form-control" id="appointment_date" name="appointment_date"
@@ -39,3 +61,32 @@
         </div>
     </div>
 </div>
+
+<!-- Al final del body, reemplaza la línea del script externo por esto -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const serviceSelect = document.getElementById("service");
+    const medicalFields = document.getElementById("medicalFields");
+    const weightInput = document.getElementById("weight");
+    const temperatureInput = document.getElementById("temperature");
+    const diagnosisInput = document.getElementById("diagnosis");
+
+    if (!serviceSelect || !medicalFields) return;
+
+    serviceSelect.addEventListener("change", function () {
+        const isMedical = this.value === "Consulta Médica";
+
+        medicalFields.style.display = isMedical ? "block" : "none";
+
+        weightInput.required = isMedical;
+        temperatureInput.required = isMedical;
+        diagnosisInput.required = isMedical;
+
+        if (!isMedical) {
+            weightInput.value = "";
+            temperatureInput.value = "";
+            diagnosisInput.value = "";
+        }
+    });
+});
+</script>
