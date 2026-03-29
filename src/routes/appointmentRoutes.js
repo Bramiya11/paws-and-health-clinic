@@ -9,5 +9,7 @@ router.get('/create', appointmentController.getCreateForm);
 router.post('/create', appointmentController.createAppointment);
 //HU3, Solo usuarios autenticados pueden eliminar.
 router.post('/delete/:id', isAuthenticated, appointmentController.deleteAppointment);
+//HU4, Solo usuarios autenticados 
+router.get('/historial/:petId',  isAuthenticated, appointmentController.getMedicalHistory);
 
 module.exports = router;

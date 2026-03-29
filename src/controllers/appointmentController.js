@@ -24,3 +24,22 @@ exports.deleteAppointment = (req, res) => {
         res.redirect('/');
     });
 };
+
+exports.getMedicalHistory = (req, res) => {
+    const petId = req.params.petId;
+
+    AppointmentModel.getMedicalHistoryByPet(petId, (err, rows) => {
+        if (err) return res.status(500).send(err.message);
+
+        if (rows.length === 0) {
+            return res.status(404).send('No se encontró historial para esta mascota.');
+        }
+
+        res.render('historial', {
+            title: `Historial de ${rows[0].pet_name}`,
+            records: rows,
+            pet_name: rows[0].pet_name,
+            owner_name: rows[0].owner_name
+        });
+    });
+};

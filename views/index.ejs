@@ -35,11 +35,17 @@
                                 <p class="card-text mb-1"><strong>Peso:</strong> <%= app.weight %> kg</p>
                                 <p class="card-text mb-3"><strong>Temperatura:</strong> <%= app.temperature %> °C</p>
                             <% } %>
-
-                            <form action="/delete/<%= app.id %>" method="POST"
-                                onsubmit="return confirm('¿Eliminar esta cita?')">
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
-                            </form>
+                            
+                            <%# Botones de acción %>
+                            <div class="d-flex gap-2 mt-auto">
+                                <a href="/historial/<%= app.id_pet %>" class="btn btn-sm btn-outline-primary">
+                                    📋 Ver Historial
+                                </a>
+                                <form action="/delete/<%= app.id %>" method="POST"
+                                    onsubmit="return confirm('¿Eliminar esta cita?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>

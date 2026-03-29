@@ -1,0 +1,94 @@
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="h3 mb-0">📋 Historial Clínico</h2>
+            <p class="text-muted mb-0">
+                <strong><%= pet_name %></strong> — Dueño: <%= owner_name %>
+            </p>
+        </div>
+        <a href="/" class="btn btn-outline-secondary btn-sm">← Volver</a>
+    </div>
+
+    <!-- Aviso solo lectura -->
+    <div class="alert alert-info py-2 mb-4">
+        🔒 Este historial es de <strong>solo lectura</strong>. 
+        Los datos médicos solo pueden modificarse desde una cita activa.
+    </div>
+
+    <!-- Timeline -->
+    <div class="timeline">
+        <% records.forEach((record, index) => { %>
+            <div class="timeline-item mb-4">
+                <div class="row">
+
+                    <!-- Columna fecha/índice -->
+                    <div class="col-md-2 text-center">
+                        <div class="timeline-badge 
+                            <%= record.service === 'Consulta Médica' ? 'bg-primary' : 'bg-secondary' %>
+                            text-white rounded-circle d-flex align-items-center 
+                            justify-content-center mx-auto mb-1"
+                            style="width:42px; height:42px; font-weight:600;">
+                            <%= index + 1 %>
+                        </div>
+                        <small class="text-muted d-block">
+                            <%= new Date(record.appointment_date).toLocaleDateString('es-CO', { 
+                                day: '2-digit', month: 'short', year: 'numeric' 
+                            }) %>
+                        </small>
+                    </div>
+
+                    <!-- Columna tarjeta -->
+                    <div class="col-md-10">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="card-title mb-0">
+                                        <%= record.service %>
+                                    </h6>
+                                    <span class="badge <%= record.status === 'Completed' ? 'bg-success' : 'bg-warning text-dark' %>">
+                                        <%= record.status %>
+                                    </span>
+                                </div>
+
+                                <% if (record.service === 'Consulta Médica') { %>
+                                    <div class="row g-2 mb-2">
+                                        <div class="col-auto">
+                                            <span class="badge bg-light text-dark border">
+                                                ⚖️ Peso: <%= record.weight ?? '—' %> kg
+                                            </span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="badge bg-light text-dark border">
+                                                🌡️ Temp: <%= record.temperature ?? '—' %> °C
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <p class="card-text text-muted mb-0">
+                                        <strong>Diagnóstico:</strong> 
+                                        <%= record.diagnosis ?? 'Sin diagnóstico registrado.' %>
+                                    </p>
+                                <% } else { %>
+                                    <p class="card-text text-muted mb-0">
+                                        Servicio de estética. Sin datos médicos.
+                                    </p>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        <% }) %>
+    </div>
+
+</div>
+
+<!-- Estilos del timeline -->
+<style>
+    .timeline {
+        position: relative;
+        padding-left: 0;
+    }
+</style>
