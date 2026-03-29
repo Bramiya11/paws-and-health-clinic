@@ -35,6 +35,16 @@ db.serialize(() => {
             FOREIGN KEY (id_owner) REFERENCES owner(id)
         )
     `);
+    //Nueva tabla para los usuarios 
+    db.run(`
+        CREATE TABLE users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL,
+            role TEXT NOT NULL DEFAULT 'Recepcionista',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
 
     //Aquí insertamos los valores correspondientes. En este caso migramos a Rex y Luna bajo el nuevo esquema.
     const stmtO = db.prepare("INSERT INTO owner (owner_name) VALUES (?)");
@@ -54,6 +64,11 @@ db.serialize(() => {
     stmtA.run(3, 3, "Baño y Limpieza", "2026-02-25 11:30");
     stmtA.run(4, 3, "Baño y Limpieza", "2026-02-25 11:30");
     stmtA.finalize();
+    //Usuarios de prueba
+    const stmtU = db.prepare("INSERT INTO users (username, password, role) VALUES (?, ?, ?)");
+    stmtU.run("dr.lopez", "1234", "Veterinario");
+    stmtU.run("recepcion", "1234", "Recepcionista");
+    stmtU.finalize();
 });
 
 module.exports = db;

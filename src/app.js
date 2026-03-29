@@ -2,8 +2,10 @@ const express = require('express');
 const path = require('path');
 const expressLayouts = require('express-ejs-layouts');
 const morgan = require('morgan');
-const appointmentRoutes = require('./routes/appointmentRoutes');
+const session = require('express-session');
 
+const appointmentRoutes = require('./routes/appointmentRoutes');
+const authRoutes = require('./routes/authRoutes');
 const app = express();
 
 // View engine setup
@@ -18,7 +20,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
+// Sesiones
+app.use(session({
+    secret: 'pawsAndHealth_secret_2026',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 } // 1 hora
+}));
+
+// Pasar usuario a todas las vistas
+app.use((req, res, next) => {
+    res.locals.user = req.session.user || null;
+    next();
+});
+
 // Routes
+app.use('/', authRoutes);
 app.use('/', appointmentRoutes);
 
 module.exports = app;
