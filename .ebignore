@@ -1,0 +1,7 @@
+.git
+.github
+client
+node_modules
+.env
+.env.local
+amplify.yml

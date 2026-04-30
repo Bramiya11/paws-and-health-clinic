@@ -1,0 +1,69 @@
+name: Deploy — Elastic Beanstalk (backend)
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'client/**'
+      - 'amplify.yml'
+      - '.github/workflows/ci.yml'
+
+jobs:
+  deploy:
+    name: Deploy to AWS Elastic Beanstalk
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Zip application
+        run: |
+          zip -r deploy.zip . \
+            --exclude "*.git*" \
+            --exclude "client/*" \
+            --exclude "node_modules/*" \
+            --exclude ".github/*" \
+            --exclude "amplify.yml"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            ${{ secrets.AWS_REGION }}
+
+      - name: Upload bundle to S3
+        run: |
+          VERSION="v-${{ github.sha }}"
+          aws s3 cp deploy.zip \
+            s3://${{ secrets.EB_S3_BUCKET }}/deploy-${VERSION}.zip
+
+      - name: Create EB application version
+        run: |
+          VERSION="v-${{ github.sha }}"
+          aws elasticbeanstalk create-application-version \
+            --application-name "${{ secrets.EB_APP_NAME }}" \
+            --version-label "${VERSION}" \
+            --source-bundle S3Bucket="${{ secrets.EB_S3_BUCKET }}",S3Key="deploy-${VERSION}.zip"
+
+      - name: Deploy to EB environment
+        run: |
+          VERSION="v-${{ github.sha }}"
+          aws elasticbeanstalk update-environment \
+            --environment-name "${{ secrets.EB_ENV_NAME }}" \
+            --version-label "${VERSION}"
+
+      - name: Wait for environment to be ready
+        run: |
+          aws elasticbeanstalk wait environment-updated \
+            --environment-names "${{ secrets.EB_ENV_NAME }}"
