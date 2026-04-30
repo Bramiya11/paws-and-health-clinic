@@ -34,6 +34,9 @@ app.use((req, res, next) => {
     next();
 });
 
+// Health check para AWS Elastic Beanstalk
+app.get('/health', (req, res) => res.status(200).json({ status: 'ok' }));
+
 // Routes
 app.use('/', authRoutes);
 app.use('/', appointmentRoutes);
